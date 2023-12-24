@@ -1,0 +1,27 @@
+name: "build"
+on:
+    pull_request:
+        paths:
+            - "objparse/**"
+            - "flake.*"
+            - ".github/workflows/build.yml"
+            - "pyproject.toml"
+    push:
+        branches: ["main"]
+        paths:
+            - "objparse/**"
+            - "flake.*"
+            - ".github/workflows/build.yml"
+            - "pyproject.toml"
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v4
+        - uses: DeterminateSystems/nix-installer-action@main
+        - uses: cachix/cachix-action@v13
+          with:
+            name: starrfox
+            authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+        - run: nix build
